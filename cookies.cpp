@@ -16,13 +16,14 @@ struct ListNode
 void insert(ListNode *header, valueType i)
 {
     ListNode *new_l = new ListNode(i);
+    new_l->next = header->next;
     header->next = new_l;
 }
 
 void free_list(ListNode *&header)
 {
-    ListNode *tmp = header;
-    header = header->next;
+    ListNode *tmp = header->next;
+    header->next = tmp->next;
     delete (tmp);
 }
 
@@ -37,43 +38,56 @@ void print_list(ListNode *node)
 
 int main()
 {
-    int t, l, k, x;
-    ListNode *h;
+    int t, l, k, x; //l = 1 = insert = 2 = eat
 
     cin >> t;
     ListNode *header = new ListNode(0);
-
     for (int i = 1; i <= t; i++)
     {
+        ListNode *h = header;
         cin >> l;
-        h = header;
         if (l == 1)
         {
             cin >> k >> x;
-            for (int j = 0; j <= k; j++)
+            if ((header->next == 0) || (k == 0))
             {
-                if (h->next == 0){
-                    insert(h, x);
-                    break;
-                } else if (j == k){
-                    insert(h, x);
-                } else {
+                insert(header, x);
+            }
+            else
+            {
+                for (int j = 1; j <= k; j++)
+                {
+                    if (h->next == 0)
+                    {
+                        break;
+                    }
                     h = h->next;
                 }
+                insert(h, x);
             }
         }
-        else if (l == 2)
+        else if (l==2)
         {
-            if (header->next != 0)
+            cin >> k;
+            if (h->next != 0)
             {
-                cin >> k;
-                for (int a = 1; a < k; a++)
+                for (int j = 1; j < k; j++)
                 {
-                    header = header->next;
+                    if (h->next == 0)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        h = h->next;
+                    }
                 }
-                free_list(header->next);
+                if (h->next != 0)
+                {
+                    free_list(h);
+                }
             }
         }
     }
-    print_list(header);
+    print_list(header->next);
 }
